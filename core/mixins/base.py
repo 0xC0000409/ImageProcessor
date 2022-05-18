@@ -19,13 +19,13 @@ class BaseMixin(object):
         if self.image is None:
             return
 
-        frame = cv.cvtColor(self.image, cv.COLOR_BGR2RGB)
-        image = QImage(frame, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
-        pixmap = QPixmap.fromImage(image).scaled(self.UI_image_view.width(),
-                                                 self.UI_image_view.height(),
+        image = QImage(self.image, self.image.shape[1], self.image.shape[0], self.image.strides[0],
+                       QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(image).scaled(self.imageView.width(),
+                                                 self.imageView.height(),
                                                  QtCore.Qt.KeepAspectRatio,
                                                  QtCore.Qt.SmoothTransformation)
-        self.UI_image_view.setPixmap(pixmap)
+        self.imageView.setPixmap(pixmap)
 
     @render_image
     def _process_image(self, **kwargs):
@@ -34,7 +34,7 @@ class BaseMixin(object):
 
         def apply_effects(fx_functions, current_image):
             return current_image if len(fx_functions) == 0 \
-                else apply_effects(fx_functions[1:], fx_functions[0](current_image))
+                else apply_effects(fx_functions[1:], fx_functions[0](current_image, **kwargs))
 
-        fx_functions = [getattr(self, attr) for attr in dir(self) if attr.startswith('fx')]
+        fx_functions = [getattr(self, attr) for attr in dir(self) if attr.startswith('fx_')]
         self.image = apply_effects(fx_functions, self.original_image)

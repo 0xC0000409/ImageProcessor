@@ -5,6 +5,8 @@ import cv2 as cv
 
 from core.mixins.base import BaseMixin
 from core.mixins.fx import FxMixin
+from core.ui.edit import Edit
+from core.ui.tools import Tools
 
 
 class Main(QMainWindow, BaseMixin, FxMixin):
@@ -14,40 +16,35 @@ class Main(QMainWindow, BaseMixin, FxMixin):
     def __init__(self):
         super(Main, self).__init__()
 
-        uic.loadUi('./UI/main.ui', self)
+        uic.loadUi('./ui/main.ui', self)
+        self.mount_ui(Edit, self.tabEditWidget, "editWidget")
+        self.mount_ui(Tools, self.tabToolsWidget, "toolsWidget")
+
+        self.tabWidget.hide()
 
         self.resized.connect(self._render_image)
 
         # ----------------- Menubar -----------------
-        self.UI_action_open = self.findChild(QAction, "actionOpen")
-        self.UI_action_open.triggered.connect(self.open_image)
-
-        self.UI_action_save = self.findChild(QAction, "actionSave")
-
-        self.UI_action_save_as = self.findChild(QAction, "actionSaveAs")
-
-        self.UI_action_about = self.findChild(QAction, "actionAbout")
-
-        self.UI_action_exit = self.findChild(QAction, "actionExit")
-        self.UI_action_exit.triggered.connect(lambda: self.close())
+        self.actionOpen.triggered.connect(self.open_image)
+        self.actionUndo.triggered.connect(self.undo)
+        self.actionExit.triggered.connect(self.close)
         # ----------------- End of Menubar -----------------
-        self.UI_image_view = self.findChild(QLabel, "imageView")
-        self.UI_z = self.findChild(QSlider, "horizontalSlider")
-        self.UI_y = self.findChild(QSlider, "horizontalSlider2")
-        self.UI_image_view.setMinimumSize(426, 240)
-
-        self.UI_z.valueChanged.connect(self._process_image)
-        self.UI_y.valueChanged.connect(self._process_image)
+        self.imageView.setMinimumSize(426, 240)
 
         self.image_path = None
         self.image = None
         self.original_image = None
+        self.state_stack = []
 
         self.show()
 
     def resizeEvent(self, event):
         self.resized.emit()
         return super(Main, self).resizeEvent(event)
+
+    def mount_ui(self, ui_class, mount_point, widget_name):
+        setattr(self, widget_name, ui_class(mount_point, self))
+        mount_point.layout().addWidget(getattr(self, widget_name))
 
     @BaseMixin.render_image
     def open_image(self, **kwargs):
@@ -56,4 +53,10 @@ class Main(QMainWindow, BaseMixin, FxMixin):
             self.image_path = image_path
             self.setWindowTitle(image_path)
             self.image = cv.imread(self.image_path)
+            self.image = cv.cvtColor(self.image, cv.COLOR_BGR2RGB)
             self.original_image = self.image.copy()
+            self.tabWidget.show()
+
+    @BaseMixin.render_image
+    def undo(self, **kwargs):
+        print('Undo')
