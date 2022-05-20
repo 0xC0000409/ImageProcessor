@@ -106,7 +106,7 @@
     <property name="title">
      <string>Image</string>
     </property>
-    <addaction name="actionUndo"/>
+    <addaction name="actionRestoreImage"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuImage"/>
@@ -155,12 +155,12 @@
     <string>About</string>
    </property>
   </action>
-  <action name="actionUndo">
+  <action name="actionRestoreImage">
    <property name="text">
-    <string>Undo</string>
+    <string>Restore Image</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Z</string>
+    <string>Ctrl+Alt+Z</string>
    </property>
   </action>
  </widget>

@@ -1,6 +1,5 @@
 import functools
 
-import cv2 as cv
 from PyQt5 import QtCore
 from PyQt5.QtGui import QImage, QPixmap
 

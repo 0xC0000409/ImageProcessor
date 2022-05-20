@@ -20,6 +20,25 @@ class Edit(AbstractUi):
 
         self.flip_mode = None
 
+    def get_widget_state(self):
+        return {
+            'brightness_slider': self.brightnessSlider.value(),
+            'blur_slider': self.blurSlider.value(),
+            'rotation_dial': self.rotationDial.value(),
+            'contrast_slider': self.contrastSlider.value(),
+            'flip_mode': self.flip_mode
+        }
+
+    def set_widget_state(self, state=None):
+        if state is None:
+            state = {}
+
+        self.brightnessSlider.setValue(state.get('brightness_slider', 0))
+        self.blurSlider.setValue(state.get('blur_slider', 0))
+        self.rotationDial.setValue(state.get('rotation_dial', 180))
+        self.contrastSlider.setValue(state.get('contrast_slider', 10))
+        self.flip_mode = state.get('flip_mode', None)
+
     @AbstractUi.image_processed
     def brightness_changed(self):
         self.brightnessLabel.setText(

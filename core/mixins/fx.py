@@ -19,7 +19,7 @@ class FxMixin(object):
         value = self.editWidget.blurSlider.value()
         return cv.blur(image, (value + 1, value + 1))
 
-    def fx_detect_edges(self, image):
+    def fx_detect_edges(self, image, **kwargs):
         if not self.toolsWidget.detect_edges:
             return image
 

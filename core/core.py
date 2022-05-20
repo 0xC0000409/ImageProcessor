@@ -16,6 +16,12 @@ class Main(QMainWindow, BaseMixin, FxMixin):
     def __init__(self):
         super(Main, self).__init__()
 
+        self.image_path = None
+        self.image = None
+        self.original_image = None
+
+        self.child_widgets = []
+
         uic.loadUi('./ui/main.ui', self)
         self.mount_ui(Edit, self.tabEditWidget, "editWidget")
         self.mount_ui(Tools, self.tabToolsWidget, "toolsWidget")
@@ -26,15 +32,11 @@ class Main(QMainWindow, BaseMixin, FxMixin):
 
         # ----------------- Menubar -----------------
         self.actionOpen.triggered.connect(self.open_image)
-        self.actionUndo.triggered.connect(self.undo)
+        self.actionRestoreImage.triggered.connect(self.restore_image)
+        self.actionRestoreImage.setEnabled(False)
         self.actionExit.triggered.connect(self.close)
         # ----------------- End of Menubar -----------------
         self.imageView.setMinimumSize(426, 240)
-
-        self.image_path = None
-        self.image = None
-        self.original_image = None
-        self.state_stack = []
 
         self.show()
 
@@ -44,7 +46,9 @@ class Main(QMainWindow, BaseMixin, FxMixin):
 
     def mount_ui(self, ui_class, mount_point, widget_name):
         setattr(self, widget_name, ui_class(mount_point, self))
-        mount_point.layout().addWidget(getattr(self, widget_name))
+        child_widget = getattr(self, widget_name)
+        mount_point.layout().addWidget(child_widget)
+        self.child_widgets.append(child_widget)
 
     @BaseMixin.render_image
     def open_image(self, **kwargs):
@@ -55,8 +59,12 @@ class Main(QMainWindow, BaseMixin, FxMixin):
             self.image = cv.imread(self.image_path)
             self.image = cv.cvtColor(self.image, cv.COLOR_BGR2RGB)
             self.original_image = self.image.copy()
+
             self.tabWidget.show()
+            self.actionRestoreImage.setEnabled(True)
 
     @BaseMixin.render_image
-    def undo(self, **kwargs):
-        print('Undo')
+    def restore_image(self, **kwargs):
+        for child in self.child_widgets:
+            child.set_widget_state()
+        self.image = self.original_image
