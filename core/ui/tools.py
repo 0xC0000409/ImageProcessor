@@ -7,15 +7,15 @@ class Tools(AbstractUi):
         super().__init__(parent, root)
         uic.loadUi('./ui/tools.ui', self)
 
-        self.generate_binary_image = False
+        self.extract_text = False
         self.detect_edges = False
 
-        self.buttonGenBinaryImage.clicked.connect(self._generate_binary_image)
+        self.buttonExtractText.clicked.connect(self._extract_text)
         self.buttonDetectEdges.clicked.connect(self._detect_edges)
 
     def get_widget_state(self):
         return {
-            'generate_binary_image': self.generate_binary_image,
+            'extract_text': self.extract_text,
             'detect_edges': self.detect_edges
         }
 
@@ -23,16 +23,16 @@ class Tools(AbstractUi):
         if state is None:
             state = {}
 
-        self.buttonGenBinaryImage.blockSignals(True)
+        self.buttonExtractText.blockSignals(True)
         self.buttonDetectEdges.blockSignals(True)
-        self.generate_binary_image = state.get('generate_binary_image', False)
+        self.extract_text = state.get('extract_text', False)
         self.detect_edges = state.get('detect_edges', False)
-        self.buttonGenBinaryImage.blockSignals(False)
+        self.buttonExtractText.blockSignals(False)
         self.buttonDetectEdges.blockSignals(False)
 
     @AbstractUi.image_processed
-    def _generate_binary_image(self):
-        self.generate_binary_image = True
+    def _extract_text(self):
+        self.extract_text = True
 
     @AbstractUi.image_processed
     def _detect_edges(self):

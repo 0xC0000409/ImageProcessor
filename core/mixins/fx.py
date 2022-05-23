@@ -1,5 +1,9 @@
-import cv2
 import cv2 as cv
+import numpy as np
+import pytesseract
+from PyQt5.QtWidgets import QPushButton, QMessageBox
+
+from core.helpers.message_box import QtMessageBox, QtMessageBoxVariant
 
 
 class FxMixin(object):
@@ -44,11 +48,61 @@ class FxMixin(object):
 
         return cv.flip(image, flip_mode)
 
-    def fx_binary_image(self, image, **kwargs):
-        generate = self.toolsWidget.generate_binary_image
+    def fx_extract_text(self, image, **kwargs):
+        generate = self.toolsWidget.extract_text
         if not generate:
             return image
 
-        greyscale = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
-        threshold = cv.adaptiveThreshold(greyscale, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 7)
-        return cv.cvtColor(threshold, cv.COLOR_GRAY2BGR)
+        grayscale = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+        threshold = cv.adaptiveThreshold(grayscale, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 7)
+
+        rect_kernel = cv.getStructuringElement(cv.MORPH_RECT, (18, 18))
+
+        dilation = cv.dilate(threshold, rect_kernel)
+
+        contours, hierarchy = cv.findContours(dilation, cv.RETR_EXTERNAL,
+                                              cv.CHAIN_APPROX_NONE)
+
+        extracted_text = ""
+        img_copy = image.copy()
+        for cnt in contours:
+            x, y, w, h = cv.boundingRect(cnt)
+            cv.rectangle(img_copy, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cropped = img_copy[y:y + h, x:x + w]
+            text = pytesseract.image_to_string(cropped)
+            extracted_text = extracted_text + text
+
+        text_extracted = len(extracted_text) > 0
+
+        message_box = QtMessageBox(self, {
+            'icon': QtMessageBoxVariant.INFORMATION if text_extracted else QtMessageBoxVariant.WARNING,
+            'title': "Detected Text:",
+            'text': extracted_text if text_extracted else "Text couldn't be extracted from the given image."
+        })
+
+        if text_extracted:
+            def _clicked():
+                self.clipboard.setText(extracted_text)
+                QtMessageBox(self, {
+                    'icon': QtMessageBoxVariant.INFORMATION,
+                    'title': "Information",
+                    'text': "Text copied to clipboard"
+                }).show()
+
+            btn = QPushButton("Copy to Clipboard")
+            btn.clicked.connect(_clicked)
+            message_box.msg_box.addButton(btn, QMessageBox.NoRole)
+        message_box.show()
+
+        self.toolsWidget.extract_text = False
+
+        return image
+
+    # Todo
+    def _fx_align_image(self, image, **kwargs):
+        grayscale = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+        orb = cv.ORB_create(500)
+        keypoints, descriptors = orb.detectAndCompute(grayscale, None)
+        cv.imshow("Window", cv.drawKeypoints(image, keypoints, outImage=np.array([]), color=(255, 0, 0),
+                                             flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS))
+        return image

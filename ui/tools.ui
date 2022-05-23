@@ -15,9 +15,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QPushButton" name="buttonGenBinaryImage">
+    <widget class="QPushButton" name="buttonExtractText">
      <property name="text">
-      <string>Generate Binary Image</string>
+      <string>Detect and Extract Text</string>
      </property>
     </widget>
    </item>

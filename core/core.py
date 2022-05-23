@@ -1,4 +1,7 @@
 import os
+
+import pytesseract
+from PyQt5.QtGui import QClipboard
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtCore
 import cv2 as cv
@@ -59,6 +62,7 @@ class Main(QMainWindow, BaseMixin, FxMixin):
             self.image = cv.imread(self.image_path)
             self.image = cv.cvtColor(self.image, cv.COLOR_BGR2RGB)
             self.original_image = self.image.copy()
+            self.restore_image()
 
             self.tabWidget.show()
             self.actionRestoreImage.setEnabled(True)
