@@ -3,6 +3,7 @@ import numpy as np
 import pytesseract
 from PyQt5.QtWidgets import QPushButton, QMessageBox
 
+from core.helpers.generic import GenericHelper
 from core.helpers.message_box import QtMessageBox, QtMessageBoxVariant
 
 
@@ -56,6 +57,9 @@ class FxMixin(object):
         grayscale = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
         threshold = cv.adaptiveThreshold(grayscale, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 7)
 
+        if self.DEBUG_MODE:
+            GenericHelper.show_img(threshold)
+
         rect_kernel = cv.getStructuringElement(cv.MORPH_RECT, (18, 18))
 
         dilation = cv.dilate(threshold, rect_kernel)
@@ -68,6 +72,10 @@ class FxMixin(object):
         for cnt in contours:
             x, y, w, h = cv.boundingRect(cnt)
             cv.rectangle(img_copy, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+            if self.DEBUG_MODE:
+                GenericHelper.show_img(img_copy)
+
             cropped = img_copy[y:y + h, x:x + w]
             text = pytesseract.image_to_string(cropped)
             extracted_text = extracted_text + text
@@ -92,17 +100,30 @@ class FxMixin(object):
             btn = QPushButton("Copy to Clipboard")
             btn.clicked.connect(_clicked)
             message_box.msg_box.addButton(btn, QMessageBox.NoRole)
+
         message_box.show()
 
         self.toolsWidget.extract_text = False
 
         return image
 
-    # Todo
-    def _fx_align_image(self, image, **kwargs):
+    def fx_align_image(self, image, **kwargs):
+        if not self.toolsWidget.align_image:
+            return image
+
+        opened = GenericHelper.open_image(self)
+
+        if not opened:
+            return image
+
         grayscale = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
         orb = cv.ORB_create(500)
         keypoints, descriptors = orb.detectAndCompute(grayscale, None)
-        cv.imshow("Window", cv.drawKeypoints(image, keypoints, outImage=np.array([]), color=(255, 0, 0),
-                                             flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS))
+
+        if self.DEBUG_MODE:
+            GenericHelper.show_img(cv.drawKeypoints(image, keypoints, outImage=np.array([]), color=(255, 0, 0),
+                                                    flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS))
+
+        self.toolsWidget.align_image = False
+
         return image

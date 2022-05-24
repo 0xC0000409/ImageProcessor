@@ -9,14 +9,17 @@ class Tools(AbstractUi):
 
         self.extract_text = False
         self.detect_edges = False
+        self.align_image = False
 
         self.buttonExtractText.clicked.connect(self._extract_text)
         self.buttonDetectEdges.clicked.connect(self._detect_edges)
+        self.buttonAlignImage.clicked.connect(self._align_image)
 
     def get_widget_state(self):
         return {
             'extract_text': self.extract_text,
-            'detect_edges': self.detect_edges
+            'detect_edges': self.detect_edges,
+            'align_image': self.align_image,
         }
 
     def set_widget_state(self, state=None):
@@ -37,3 +40,7 @@ class Tools(AbstractUi):
     @AbstractUi.image_processed
     def _detect_edges(self):
         self.detect_edges = True
+
+    @AbstractUi.image_processed
+    def _align_image(self):
+        self.align_image = True

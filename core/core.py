@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtCore
 import cv2 as cv
 
+from core.helpers.generic import GenericHelper
 from core.mixins.base import BaseMixin
 from core.mixins.fx import FxMixin
 from core.ui.edit import Edit
@@ -14,7 +15,6 @@ from core.ui.tools import Tools
 
 class Main(QMainWindow, BaseMixin, FxMixin):
     resized = QtCore.pyqtSignal()
-    IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png']
 
     def __init__(self):
         super(Main, self).__init__()
@@ -55,17 +55,17 @@ class Main(QMainWindow, BaseMixin, FxMixin):
 
     @BaseMixin.render_image
     def open_image(self, **kwargs):
-        image_path = QFileDialog.getOpenFileName(self, 'Open Image', './', "Image files (*.jpg *.jpeg *.png)")[0]
-        if image_path and os.path.splitext(image_path)[1] in self.IMAGE_EXTENSIONS:
-            self.image_path = image_path
-            self.setWindowTitle(image_path)
-            self.image = cv.imread(self.image_path)
-            self.image = cv.cvtColor(self.image, cv.COLOR_BGR2RGB)
+        opened = GenericHelper.open_image(self)
+
+        if opened:
+            self.image_path = opened['path']
+            self.setWindowTitle(self.image_path)
+            self.image = opened['image']
             self.original_image = self.image.copy()
-            self.restore_image()
 
             self.tabWidget.show()
             self.actionRestoreImage.setEnabled(True)
+            self.restore_image()
 
     @BaseMixin.render_image
     def restore_image(self, **kwargs):
