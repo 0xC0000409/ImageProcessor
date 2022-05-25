@@ -26,10 +26,11 @@ class GenericHelper:
                 'path': image_path
             }
 
-        QtMessageBox(parent_window, {
-            'icon': QtMessageBoxVariant.CRITICAL,
-            'title': "Error",
-            'text': "Image couldn't be opened."
-        }).show()
+        if image_path:
+            QtMessageBox(parent_window, {
+                'icon': QtMessageBoxVariant.CRITICAL,
+                'title': "Error",
+                'text': "Image couldn't be opened."
+            }).show()
 
         return None

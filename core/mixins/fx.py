@@ -116,14 +116,41 @@ class FxMixin(object):
         if not opened:
             return image
 
-        grayscale = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+        src_grayscale = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+        target_grayscale = cv.cvtColor(opened['image'], cv.COLOR_RGB2GRAY)
+
         orb = cv.ORB_create(500)
-        keypoints, descriptors = orb.detectAndCompute(grayscale, None)
+        src_keypoints, src_descriptors = orb.detectAndCompute(src_grayscale, None)
+        target_keypoints, target_descriptors = orb.detectAndCompute(target_grayscale, None)
 
         if self.DEBUG_MODE:
-            GenericHelper.show_img(cv.drawKeypoints(image, keypoints, outImage=np.array([]), color=(255, 0, 0),
+            GenericHelper.show_img(cv.drawKeypoints(image, src_keypoints, outImage=np.array([]), color=(255, 0, 0),
                                                     flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS))
+            GenericHelper.show_img(
+                cv.drawKeypoints(opened["image"], target_keypoints, outImage=np.array([]), color=(255, 0, 0),
+                                 flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS))
+
+        matcher = cv.DescriptorMatcher_create(cv.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
+        matches = matcher.match(src_descriptors, target_descriptors, None)
+
+        matches = sorted(matches, key=lambda x: x.distance, reverse=False)
+        good_matches = int(len(matches) * 0.1)
+        matches = matches[:good_matches]
+
+        if self.DEBUG_MODE:
+            GenericHelper.show_img(
+                cv.drawMatches(image, src_keypoints, opened['image'], target_keypoints, matches, None))
+
+        points_1 = np.zeros((len(matches), 2), dtype=np.float32)
+        points_2 = np.zeros((len(matches), 2), dtype=np.float32)
+
+        for i, match in enumerate(matches):
+            points_1[i, :] = src_keypoints[match.queryIdx].pt
+            points_2[i, :] = target_keypoints[match.trainIdx].pt
+
+        h, mask = cv.findHomography(points_1, points_2, cv.RANSAC)
+        height, width, channels = opened["image"].shape
 
         self.toolsWidget.align_image = False
 
-        return image
+        return cv.warpPerspective(image, h, (width, height))
