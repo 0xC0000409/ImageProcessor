@@ -108,10 +108,13 @@ class FxMixin(object):
         return image
 
     def fx_align_image(self, image, **kwargs):
-        if not self.toolsWidget.align_image:
+        if not self.toolsWidget.align_image["execute"]:
             return image
 
-        opened = GenericHelper.open_image(self)
+        if not self.toolsWidget.align_image["opened"]:
+            self.toolsWidget.align_image["opened"] = GenericHelper.open_image(self)
+
+        opened = self.toolsWidget.align_image["opened"]
 
         if not opened:
             return image
@@ -150,7 +153,5 @@ class FxMixin(object):
 
         h, mask = cv.findHomography(points_1, points_2, cv.RANSAC)
         height, width, channels = opened["image"].shape
-
-        self.toolsWidget.align_image = False
 
         return cv.warpPerspective(image, h, (width, height))

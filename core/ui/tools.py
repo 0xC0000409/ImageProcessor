@@ -9,7 +9,11 @@ class Tools(AbstractUi):
 
         self.extract_text = False
         self.detect_edges = False
-        self.align_image = False
+
+        self.align_image = {
+            'execute': False,
+            'opened_image': None
+        }
 
         self.buttonExtractText.clicked.connect(self._extract_text)
         self.buttonDetectEdges.clicked.connect(self._detect_edges)
@@ -28,10 +32,18 @@ class Tools(AbstractUi):
 
         self.buttonExtractText.blockSignals(True)
         self.buttonDetectEdges.blockSignals(True)
+        self.buttonAlignImage.blockSignals(True)
+
         self.extract_text = state.get('extract_text', False)
         self.detect_edges = state.get('detect_edges', False)
+        self.align_image = state.get('align_image', {
+            'execute': False,
+            'opened_image': None
+        })
+
         self.buttonExtractText.blockSignals(False)
         self.buttonDetectEdges.blockSignals(False)
+        self.buttonAlignImage.blockSignals(False)
 
     @AbstractUi.image_processed
     def _extract_text(self):
@@ -43,4 +55,5 @@ class Tools(AbstractUi):
 
     @AbstractUi.image_processed
     def _align_image(self):
-        self.align_image = True
+        self.align_image["execute"] = True
+        self.align_image["opened"] = None
