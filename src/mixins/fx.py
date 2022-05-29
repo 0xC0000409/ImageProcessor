@@ -3,8 +3,8 @@ import numpy as np
 import pytesseract
 from PyQt5.QtWidgets import QPushButton, QMessageBox
 
-from core.helpers.generic import GenericHelper
-from core.helpers.message_box import QtMessageBox, QtMessageBoxVariant
+from src.helpers.generic import GenericHelper
+from src.helpers.message_box import QtMessageBox, QtMessageBoxVariant
 
 
 class FxMixin(object):
@@ -155,3 +155,16 @@ class FxMixin(object):
         height, width, channels = opened["image"].shape
 
         return cv.warpPerspective(image, h, (width, height))
+
+    def fx_detect_faces(self, image, **kwargs):
+        if not self.toolsWidget.detect_faces:
+            return image
+
+        face_cascade = cv.CascadeClassifier("./data/haarcascade_frontalface_alt.xml")
+        gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+        faces = face_cascade.detectMultiScale(gray)
+
+        for (x, y, w, h) in faces:
+            cv.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        return image

@@ -5,7 +5,7 @@ import pytesseract
 from PyQt5.QtWidgets import QApplication
 from dotenv import load_dotenv
 
-from core.core import Main
+from src.core import Main
 
 load_dotenv()
 

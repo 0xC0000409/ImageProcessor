@@ -3,7 +3,7 @@ import os
 import cv2 as cv
 from PyQt5.QtWidgets import QFileDialog
 
-from core.helpers.message_box import QtMessageBox, QtMessageBoxVariant
+from src.helpers.message_box import QtMessageBox, QtMessageBoxVariant
 
 
 class GenericHelper:

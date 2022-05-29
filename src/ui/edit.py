@@ -1,7 +1,7 @@
 import re
 from PyQt5 import uic
 
-from core.ui.abstract_ui import AbstractUi
+from src.ui.abstract_ui import AbstractUi
 
 
 class Edit(AbstractUi):

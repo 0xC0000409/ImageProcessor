@@ -6,11 +6,11 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtCore
 import cv2 as cv
 
-from core.helpers.generic import GenericHelper
-from core.mixins.base import BaseMixin
-from core.mixins.fx import FxMixin
-from core.ui.edit import Edit
-from core.ui.tools import Tools
+from src.helpers.generic import GenericHelper
+from src.mixins.base import BaseMixin
+from src.mixins.fx import FxMixin
+from src.ui.edit import Edit
+from src.ui.tools import Tools
 
 
 class Main(QMainWindow, BaseMixin, FxMixin):
