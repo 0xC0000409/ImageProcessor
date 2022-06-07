@@ -16,11 +16,13 @@ class Tools(AbstractUi):
         }
 
         self.detect_faces = False
+        self.detect_objects = False
 
         self.buttonExtractText.clicked.connect(self._extract_text)
         self.buttonDetectEdges.clicked.connect(self._detect_edges)
         self.buttonAlignImage.clicked.connect(self._align_image)
         self.buttonDetectFaces.clicked.connect(self._detect_faces)
+        self.buttonDetectObjects.clicked.connect(self._detect_objects)
 
     def get_widget_state(self):
         return {
@@ -28,6 +30,7 @@ class Tools(AbstractUi):
             'detect_edges': self.detect_edges,
             'align_image': self.align_image,
             'detect_faces': self.detect_faces,
+            'detect_objects': self.detect_objects,
         }
 
     def set_widget_state(self, state=None):
@@ -46,6 +49,7 @@ class Tools(AbstractUi):
             'opened_image': None
         })
         self.detect_faces = False
+        self.detect_objects = False
 
         self.buttonExtractText.blockSignals(False)
         self.buttonDetectEdges.blockSignals(False)
@@ -54,11 +58,11 @@ class Tools(AbstractUi):
 
     @AbstractUi.image_processed
     def _extract_text(self):
-        self.extract_text = True
+        self.extract_text = not self.extract_text
 
     @AbstractUi.image_processed
     def _detect_edges(self):
-        self.detect_edges = True
+        self.detect_edges = not self.detect_edges
 
     @AbstractUi.image_processed
     def _align_image(self):
@@ -67,4 +71,8 @@ class Tools(AbstractUi):
 
     @AbstractUi.image_processed
     def _detect_faces(self):
-        self.detect_faces = True
+        self.detect_faces = not self.detect_faces
+
+    @AbstractUi.image_processed
+    def _detect_objects(self):
+        self.detect_objects = not self.detect_objects

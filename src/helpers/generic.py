@@ -7,6 +7,10 @@ from src.helpers.message_box import QtMessageBox, QtMessageBoxVariant
 
 
 class GenericHelper:
+    OBJECT_DETECTION_MODEL_FILE = "./models/object_detection/ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb"
+    OBJECT_DETECTION_CONFIG_FILE = "./models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.pbtxt"
+    OBJECT_DETECTION_CLASS_FILE = "./models/object_detection/coco_class_labels.txt"
+
     IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png']
 
     @staticmethod

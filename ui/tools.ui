@@ -43,6 +43,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="buttonDetectObjects">
+     <property name="text">
+      <string>Detect Objects</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

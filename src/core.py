@@ -1,7 +1,3 @@
-import os
-
-import pytesseract
-from PyQt5.QtGui import QClipboard
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtCore
 import cv2 as cv
@@ -40,6 +36,15 @@ class Main(QMainWindow, BaseMixin, FxMixin):
         self.actionExit.triggered.connect(self.close)
         # ----------------- End of Menubar -----------------
         self.imageView.setMinimumSize(426, 240)
+
+        self.object_detection = {
+            "net": cv.dnn.readNetFromTensorflow(GenericHelper.OBJECT_DETECTION_MODEL_FILE,
+                                                GenericHelper.OBJECT_DETECTION_CONFIG_FILE),
+            "labels": None
+        }
+
+        with open(GenericHelper.OBJECT_DETECTION_CLASS_FILE) as fp:
+            self.object_detection["labels"] = fp.read().split("\n")
 
         self.show()
 

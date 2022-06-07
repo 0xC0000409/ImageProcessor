@@ -168,3 +168,49 @@ class FxMixin(object):
             cv.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         return image
+
+    def fx_detect_objects(self, image, **kwargs):
+        if not self.toolsWidget.detect_objects:
+            return image
+
+        FONTFACE = cv.FONT_HERSHEY_SIMPLEX
+        FONT_SCALE = 0.7
+        THICKNESS = 1
+
+        dimension = 300
+        threshold = 0.25
+
+        net = self.object_detection.get("net")
+        labels = self.object_detection.get("labels")
+
+        def _draw_text(text, _x, _y):
+            text_size = cv.getTextSize(text, FONTFACE, FONT_SCALE, THICKNESS)
+
+            dim = text_size[0]
+            baseline = text_size[1]
+
+            cv.rectangle(image, (_x, _y - dim[1] - baseline), (_x + dim[0], _y + baseline), (0, 0, 0), cv.FILLED)
+            cv.putText(image, text, (_x, _y - 5), FONTFACE, FONT_SCALE, (0, 255, 255), THICKNESS, cv.LINE_AA)
+
+        blob = cv.dnn.blobFromImage(image, 1.0, size=(dimension, dimension), mean=(0, 0, 0), swapRB=True, crop=False)
+        net.setInput(blob)
+
+        objects = net.forward()
+
+        rows = image.shape[0]
+        cols = image.shape[1]
+
+        for i in range(objects.shape[2]):
+            class_id = int(objects[0, 0, i, 1])
+            score = float(objects[0, 0, i, 2])
+
+            x = int(objects[0, 0, i, 3] * cols)
+            y = int(objects[0, 0, i, 4] * rows)
+            w = int(objects[0, 0, i, 5] * cols - x)
+            h = int(objects[0, 0, i, 6] * rows - y)
+
+            if score > threshold:
+                _draw_text("{}".format(labels[class_id]), x, y)
+                cv.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 2)
+
+        return image
