@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from PyQt5 import uic, QtCore
+from PyQt5 import uic, QtCore, QtGui
 import cv2 as cv
 
 from src.helpers.generic import GenericHelper
@@ -25,15 +25,31 @@ class Main(QMainWindow, BaseMixin, FxMixin):
         self.mount_ui(Edit, self.tabEditWidget, "editWidget")
         self.mount_ui(Tools, self.tabToolsWidget, "toolsWidget")
 
+        self.setWindowIcon(QtGui.QIcon("./icons/main.png"))
+
         self.tabWidget.hide()
 
         self.resized.connect(self._render_image)
 
         # ----------------- Menubar -----------------
         self.actionOpen.triggered.connect(self.open_image)
+        self.actionOpen.setIcon(QtGui.QIcon("./icons/open.png"))
+
+        self.actionSave.setIcon(QtGui.QIcon("./icons/save.png"))
+        self.actionSave.triggered.connect(self.save_image)
+        self.actionSaveAs.setIcon(QtGui.QIcon("./icons/save-as.png"))
+        self.actionSaveAs.triggered.connect(self.save_image_as)
+
         self.actionRestoreImage.triggered.connect(self.restore_image)
         self.actionRestoreImage.setEnabled(False)
+        self.actionRestoreImage.setIcon(QtGui.QIcon("./icons/reset.png"))
+
         self.actionExit.triggered.connect(self.close)
+        self.actionExit.setIcon(QtGui.QIcon("./icons/exit.png"))
+
+        self.actionAbout.setIcon(QtGui.QIcon("./icons/about.png"))
+        self.actionAboutQt.triggered.connect(lambda: QMessageBox.aboutQt(self, "About"))
+        self.actionAboutQt.setIcon(QtGui.QIcon("./icons/qt.png"))
         # ----------------- End of Menubar -----------------
         self.imageView.setMinimumSize(426, 240)
 
@@ -70,7 +86,20 @@ class Main(QMainWindow, BaseMixin, FxMixin):
 
             self.tabWidget.show()
             self.actionRestoreImage.setEnabled(True)
+            self.actionSave.setEnabled(True)
+            self.actionSaveAs.setEnabled(True)
             self.restore_image()
+
+    def save_image(self, **kwargs):
+        cv.imwrite(self.image_path, cv.cvtColor(self.image, cv.COLOR_BGR2RGB))
+
+    def save_image_as(self, **kwargs):
+        image_name = self.image_path.split("/")[-1]
+        directory = QFileDialog.getSaveFileName(self, "Save Image as", image_name, "Image files (*.jpg *.jpeg *.png)")[
+            0]
+
+        if directory:
+            cv.imwrite(directory, cv.cvtColor(self.image, cv.COLOR_BGR2RGB))
 
     @BaseMixin.render_image
     def restore_image(self, **kwargs):

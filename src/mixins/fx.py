@@ -111,12 +111,13 @@ class FxMixin(object):
         if not self.toolsWidget.align_image["execute"]:
             return image
 
-        if not self.toolsWidget.align_image["opened"]:
-            self.toolsWidget.align_image["opened"] = GenericHelper.open_image(self)
+        if not self.toolsWidget.align_image["opened_image"]:
+            self.toolsWidget.align_image["opened_image"] = GenericHelper.open_image(self)
 
-        opened = self.toolsWidget.align_image["opened"]
+        opened = self.toolsWidget.align_image["opened_image"]
 
         if not opened:
+            self.toolsWidget.align_image["execute"] = False
             return image
 
         src_grayscale = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
