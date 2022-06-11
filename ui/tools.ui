@@ -20,6 +20,7 @@
 	padding: 5px;
 	color: white;
 	font-weight: bold;
+	margin: 10px 0 10px 0
 }
 
 QPushButton:hover {
@@ -30,35 +31,35 @@ QPushButton:hover {
    <item>
     <widget class="QPushButton" name="buttonExtractText">
      <property name="text">
-      <string>Detect and Extract Text</string>
+      <string>  Detect and Extract Text</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="buttonDetectEdges">
      <property name="text">
-      <string>Detect Edges</string>
+      <string>  Detect Edges</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="buttonAlignImage">
      <property name="text">
-      <string>Align Image</string>
+      <string>  Align Image</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="buttonDetectFaces">
      <property name="text">
-      <string>Detect Faces</string>
+      <string>  Detect Faces</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="buttonDetectObjects">
      <property name="text">
-      <string>Detect Objects</string>
+      <string>  Detect Objects</string>
      </property>
     </widget>
    </item>

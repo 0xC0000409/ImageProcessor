@@ -32,6 +32,17 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <stylestrategy>PreferDefault</stylestrategy>
+        <kerning>true</kerning>
+       </font>
+      </property>
       <property name="layoutDirection">
        <enum>Qt::LeftToRight</enum>
       </property>
@@ -42,7 +53,7 @@
        <enum>QFrame::Raised</enum>
       </property>
       <property name="text">
-       <string/>
+       <string>Open an image for editing, by: File &gt; Open</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

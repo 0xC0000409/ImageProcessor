@@ -25,7 +25,10 @@ class Main(QMainWindow, BaseMixin, FxMixin):
         self.mount_ui(Edit, self.tabEditWidget, "editWidget")
         self.mount_ui(Tools, self.tabToolsWidget, "toolsWidget")
 
-        self.setWindowIcon(QtGui.QIcon("./icons/main.png"))
+        self.tabWidget.setTabIcon(0, QtGui.QIcon("./icons/widgets/edit_tab.png"))
+        self.tabWidget.setTabIcon(1, QtGui.QIcon("./icons/widgets/tools_tab.png"))
+
+        self.setWindowIcon(QtGui.QIcon("./icons/main/main.png"))
 
         self.tabWidget.hide()
 
@@ -33,23 +36,23 @@ class Main(QMainWindow, BaseMixin, FxMixin):
 
         # ----------------- Menubar -----------------
         self.actionOpen.triggered.connect(self.open_image)
-        self.actionOpen.setIcon(QtGui.QIcon("./icons/open.png"))
+        self.actionOpen.setIcon(QtGui.QIcon("./icons/main/open.png"))
 
-        self.actionSave.setIcon(QtGui.QIcon("./icons/save.png"))
+        self.actionSave.setIcon(QtGui.QIcon("./icons/main/save.png"))
         self.actionSave.triggered.connect(self.save_image)
-        self.actionSaveAs.setIcon(QtGui.QIcon("./icons/save-as.png"))
+        self.actionSaveAs.setIcon(QtGui.QIcon("./icons/main/save-as.png"))
         self.actionSaveAs.triggered.connect(self.save_image_as)
 
         self.actionRestoreImage.triggered.connect(self.restore_image)
         self.actionRestoreImage.setEnabled(False)
-        self.actionRestoreImage.setIcon(QtGui.QIcon("./icons/reset.png"))
+        self.actionRestoreImage.setIcon(QtGui.QIcon("./icons/main/reset.png"))
 
         self.actionExit.triggered.connect(self.close)
-        self.actionExit.setIcon(QtGui.QIcon("./icons/exit.png"))
+        self.actionExit.setIcon(QtGui.QIcon("./icons/main/exit.png"))
 
-        self.actionAbout.setIcon(QtGui.QIcon("./icons/about.png"))
+        self.actionAbout.setIcon(QtGui.QIcon("./icons/main/about.png"))
         self.actionAboutQt.triggered.connect(lambda: QMessageBox.aboutQt(self, "About"))
-        self.actionAboutQt.setIcon(QtGui.QIcon("./icons/qt.png"))
+        self.actionAboutQt.setIcon(QtGui.QIcon("./icons/main/qt.png"))
         # ----------------- End of Menubar -----------------
         self.imageView.setMinimumSize(426, 240)
 
@@ -92,6 +95,7 @@ class Main(QMainWindow, BaseMixin, FxMixin):
 
     def save_image(self, **kwargs):
         cv.imwrite(self.image_path, cv.cvtColor(self.image, cv.COLOR_BGR2RGB))
+        self.show_status_bar_message(f'Image: {self.image_path.split("/")[-1]} saved.')
 
     def save_image_as(self, **kwargs):
         image_name = self.image_path.split("/")[-1]
@@ -100,6 +104,7 @@ class Main(QMainWindow, BaseMixin, FxMixin):
 
         if directory:
             cv.imwrite(directory, cv.cvtColor(self.image, cv.COLOR_BGR2RGB))
+            self.show_status_bar_message(f'Image: {image_name} saved.')
 
     @BaseMixin.render_image
     def restore_image(self, **kwargs):

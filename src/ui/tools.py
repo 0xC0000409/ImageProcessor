@@ -1,5 +1,5 @@
 from src.ui.abstract_ui import AbstractUi
-from PyQt5 import uic
+from PyQt5 import uic, QtGui
 
 
 class Tools(AbstractUi):
@@ -19,10 +19,19 @@ class Tools(AbstractUi):
         self.detect_objects = False
 
         self.buttonExtractText.clicked.connect(self._extract_text)
+        self.buttonExtractText.setIcon(QtGui.QIcon("./icons/widgets/extract_text.png"))
+
         self.buttonDetectEdges.clicked.connect(self._detect_edges)
+        self.buttonDetectEdges.setIcon(QtGui.QIcon("./icons/widgets/detect_edges.png"))
+
         self.buttonAlignImage.clicked.connect(self._align_image)
+        self.buttonAlignImage.setIcon(QtGui.QIcon("./icons/widgets/align_image.png"))
+
         self.buttonDetectFaces.clicked.connect(self._detect_faces)
+        self.buttonDetectFaces.setIcon(QtGui.QIcon("./icons/widgets/detect_faces.png"))
+
         self.buttonDetectObjects.clicked.connect(self._detect_objects)
+        self.buttonDetectObjects.setIcon(QtGui.QIcon("./icons/widgets/detect_objects.png"))
 
     def get_widget_state(self):
         return {

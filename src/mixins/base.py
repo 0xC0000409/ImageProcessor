@@ -14,6 +14,9 @@ class BaseMixin(object):
 
         return wrapper
 
+    def show_status_bar_message(self, message, timeout=3000):
+        self.statusBar().showMessage(message, timeout)
+
     def _render_image(self):
         if self.image is None:
             return
