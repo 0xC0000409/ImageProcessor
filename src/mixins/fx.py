@@ -161,7 +161,7 @@ class FxMixin(object):
         if not self.toolsWidget.detect_faces:
             return image
 
-        face_cascade = cv.CascadeClassifier("./data/haarcascade_frontalface_alt.xml")
+        face_cascade = cv.CascadeClassifier(GenericHelper.get(__file__, "../../data/haarcascade_frontalface_alt.xml"))
         gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
         faces = face_cascade.detectMultiScale(gray)
 

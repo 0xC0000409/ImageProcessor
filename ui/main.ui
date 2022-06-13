@@ -53,7 +53,7 @@
        <enum>QFrame::Raised</enum>
       </property>
       <property name="text">
-       <string>Open an image for editing, by: File &gt; Open</string>
+       <string>Open an image for editing, by: File &gt; Open (Ctrl + O)</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

@@ -1,13 +1,14 @@
 import re
 from PyQt5 import uic
 
+from src.helpers.generic import GenericHelper
 from src.ui.abstract_ui import AbstractUi
 
 
 class Edit(AbstractUi):
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        uic.loadUi('./ui/edit.ui', self)
+        uic.loadUi(GenericHelper.get(__file__, '../../ui/edit.ui'), self)
 
         self.brightnessSlider.valueChanged.connect(self.brightness_changed)
         self.blurSlider.valueChanged.connect(self.blur_changed)

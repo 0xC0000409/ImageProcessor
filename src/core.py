@@ -21,14 +21,14 @@ class Main(QMainWindow, BaseMixin, FxMixin):
 
         self.child_widgets = []
 
-        uic.loadUi('./ui/main.ui', self)
+        uic.loadUi(GenericHelper.get(__file__, '../ui/main.ui'), self)
         self.mount_ui(Edit, self.tabEditWidget, "editWidget")
         self.mount_ui(Tools, self.tabToolsWidget, "toolsWidget")
 
-        self.tabWidget.setTabIcon(0, QtGui.QIcon("./icons/widgets/edit_tab.png"))
-        self.tabWidget.setTabIcon(1, QtGui.QIcon("./icons/widgets/tools_tab.png"))
+        self.tabWidget.setTabIcon(0, QtGui.QIcon(GenericHelper.get(__file__, "../icons/widgets/edit_tab.png")))
+        self.tabWidget.setTabIcon(1, QtGui.QIcon(GenericHelper.get(__file__, "../icons/widgets/tools_tab.png")))
 
-        self.setWindowIcon(QtGui.QIcon("./icons/main/main.png"))
+        self.setWindowIcon(QtGui.QIcon(GenericHelper.get(__file__, "../icons/base/main.png")))
 
         self.tabWidget.hide()
 
@@ -36,33 +36,34 @@ class Main(QMainWindow, BaseMixin, FxMixin):
 
         # ----------------- Menubar -----------------
         self.actionOpen.triggered.connect(self.open_image)
-        self.actionOpen.setIcon(QtGui.QIcon("./icons/main/open.png"))
+        self.actionOpen.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../icons/base/open.png")))
 
-        self.actionSave.setIcon(QtGui.QIcon("./icons/main/save.png"))
+        self.actionSave.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../icons/base/save.png")))
         self.actionSave.triggered.connect(self.save_image)
-        self.actionSaveAs.setIcon(QtGui.QIcon("./icons/main/save-as.png"))
+        self.actionSaveAs.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../icons/base/save-as.png")))
         self.actionSaveAs.triggered.connect(self.save_image_as)
 
         self.actionRestoreImage.triggered.connect(self.restore_image)
         self.actionRestoreImage.setEnabled(False)
-        self.actionRestoreImage.setIcon(QtGui.QIcon("./icons/main/reset.png"))
+        self.actionRestoreImage.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../icons/base/reset.png")))
 
         self.actionExit.triggered.connect(self.close)
-        self.actionExit.setIcon(QtGui.QIcon("./icons/main/exit.png"))
+        self.actionExit.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../icons/base/exit.png")))
 
-        self.actionAbout.setIcon(QtGui.QIcon("./icons/main/about.png"))
+        self.actionAbout.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../icons/base/about.png")))
         self.actionAboutQt.triggered.connect(lambda: QMessageBox.aboutQt(self, "About"))
-        self.actionAboutQt.setIcon(QtGui.QIcon("./icons/main/qt.png"))
+        self.actionAboutQt.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../icons/base/qt.png")))
         # ----------------- End of Menubar -----------------
         self.imageView.setMinimumSize(426, 240)
 
         self.object_detection = {
-            "net": cv.dnn.readNetFromTensorflow(GenericHelper.OBJECT_DETECTION_MODEL_FILE,
-                                                GenericHelper.OBJECT_DETECTION_CONFIG_FILE),
+            "net": cv.dnn.readNetFromTensorflow(GenericHelper.get(__file__, GenericHelper.OBJECT_DETECTION_MODEL_FILE),
+                                                GenericHelper.get(__file__,
+                                                                  GenericHelper.OBJECT_DETECTION_CONFIG_FILE)),
             "labels": None
         }
 
-        with open(GenericHelper.OBJECT_DETECTION_CLASS_FILE) as fp:
+        with open(GenericHelper.get(__file__, GenericHelper.OBJECT_DETECTION_CLASS_FILE)) as fp:
             self.object_detection["labels"] = fp.read().split("\n")
 
         self.show()
