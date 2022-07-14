@@ -6,8 +6,9 @@ from PyQt5.QtWidgets import QApplication
 from dotenv import load_dotenv
 
 from src.core import Main
+from src.helpers.generic import GenericHelper
 
-load_dotenv()
+load_dotenv(dotenv_path=GenericHelper.get(__file__, '.env'))
 
 pytesseract.pytesseract.tesseract_cmd = os.getenv("TESSERACT_EXECUTABLE_PATH")
 

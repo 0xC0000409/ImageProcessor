@@ -8,7 +8,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('data', 'data'), ('icons', 'icons'), ('ui', 'ui'), ('models', 'models')],
+    datas=[('data', 'data'), ('icons', 'icons'), ('ui', 'ui'), ('models', 'models'), ('.env', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -41,5 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='icons\\base\\main.ico'
+    onefile=True
 )
