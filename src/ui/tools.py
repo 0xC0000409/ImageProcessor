@@ -1,3 +1,6 @@
+import os
+from os.path import isfile
+
 from src.helpers.generic import GenericHelper
 from src.ui.abstract_ui import AbstractUi
 from PyQt5 import uic, QtGui
@@ -19,8 +22,13 @@ class Tools(AbstractUi):
         self.detect_faces = False
         self.detect_objects = False
 
-        self.buttonExtractText.clicked.connect(self._extract_text)
-        self.buttonExtractText.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../../icons/widgets/extract_text.png")))
+        if isfile(os.getenv("TESSERACT_EXECUTABLE_PATH")):
+            self.buttonExtractText.clicked.connect(self._extract_text)
+        else:
+            self.buttonExtractText.setStyleSheet("background-color:grey;")
+
+        self.buttonExtractText.setIcon(
+            QtGui.QIcon(GenericHelper.get(__file__, "../../icons/widgets/extract_text.png")))
 
         self.buttonDetectEdges.clicked.connect(self._detect_edges)
         self.buttonDetectEdges.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../../icons/widgets/detect_edges.png")))
