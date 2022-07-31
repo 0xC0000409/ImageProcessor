@@ -1,3 +1,5 @@
+import os
+
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtCore, QtGui
 import cv2 as cv
@@ -56,15 +58,15 @@ class Main(QMainWindow, BaseMixin, FxMixin):
         # ----------------- End of Menubar -----------------
         self.imageView.setMinimumSize(426, 240)
 
-        self.object_detection = {
-            "net": cv.dnn.readNetFromTensorflow(GenericHelper.get(__file__, GenericHelper.OBJECT_DETECTION_MODEL_FILE),
-                                                GenericHelper.get(__file__,
-                                                                  GenericHelper.OBJECT_DETECTION_CONFIG_FILE)),
-            "labels": None
-        }
+        if self.toolsWidget.OBJECT_DETECTION_ENABLED:
+            self.object_detection = {
+                "net": cv.dnn.readNetFromTensorflow(os.getenv("OBJECT_DETECTION_MODEL_FILE_PATH"),
+                                                    os.getenv("OBJECT_DETECTION_CONFIG_FILE_PATH")),
+                "labels": None
+            }
 
-        with open(GenericHelper.get(__file__, GenericHelper.OBJECT_DETECTION_CLASS_FILE)) as fp:
-            self.object_detection["labels"] = fp.read().split("\n")
+            with open(os.getenv("OBJECT_DETECTION_CLASS_FILE_PATH")) as fp:
+                self.object_detection["labels"] = fp.read().split("\n")
 
         self.show()
 

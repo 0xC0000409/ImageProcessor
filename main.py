@@ -1,5 +1,6 @@
 import os
 import sys
+from os.path import isfile
 
 import pytesseract
 from PyQt5.QtWidgets import QApplication

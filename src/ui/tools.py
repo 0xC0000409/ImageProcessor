@@ -21,6 +21,8 @@ class Tools(AbstractUi):
 
         self.detect_faces = False
         self.detect_objects = False
+        self.OBJECT_DETECTION_ENABLED = isfile(os.getenv("OBJECT_DETECTION_MODEL_FILE_PATH")) and isfile(
+            os.getenv("OBJECT_DETECTION_CONFIG_FILE_PATH")) and isfile(os.getenv("OBJECT_DETECTION_CLASS_FILE_PATH"))
 
         if isfile(os.getenv("TESSERACT_EXECUTABLE_PATH")):
             self.buttonExtractText.clicked.connect(self._extract_text)
@@ -39,7 +41,11 @@ class Tools(AbstractUi):
         self.buttonDetectFaces.clicked.connect(self._detect_faces)
         self.buttonDetectFaces.setIcon(QtGui.QIcon(GenericHelper.get(__file__, "../../icons/widgets/detect_faces.png")))
 
-        self.buttonDetectObjects.clicked.connect(self._detect_objects)
+        if self.OBJECT_DETECTION_ENABLED:
+            self.buttonDetectObjects.clicked.connect(self._detect_objects)
+        else:
+            self.buttonDetectObjects.setStyleSheet("background-color:grey;")
+
         self.buttonDetectObjects.setIcon(
             QtGui.QIcon(GenericHelper.get(__file__, "../../icons/widgets/detect_objects.png")))
 
